@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <!-- SEGURIDAD: Política de Referrer - controla qué info se envía a sitios externos -->
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <!-- SEGURIDAD: Content Security Policy - bloquea scripts/recursos no autorizados -->
+    <meta http-equiv="Content-Security-Policy" content="
+      default-src 'self';
+      script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com;
+      style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com;
+      font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com;
+      frame-src https://docs.google.com https://forms.gle;
+      connect-src 'self' https://formspree.io http://localhost:3000;
+      img-src 'self' data: https://images.unsplash.com;
+      object-src 'none';
+      base-uri 'self';
+      form-action 'self' https://formspree.io;
+    ">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestoría Integral Tucumán</title>
+
+
+    <!-- Ícono -->
+    <link rel="apple-touch-icon" href="imagenes/JD3.svg" sizes="180x180">
+    <link rel="icon" href="imagenes/JD3.svg" type="image/svg+xml" sizes="32x32">
+    <!-- Google Fonts: Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- FontAwesome para Íconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Tailwind CSS (Reemplaza a Bootstrap para un diseño más moderno y ligero) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Poppins', 'sans-serif'] },
+                    colors: {
+                        primary: '#001952', // Azul oscuro profesional
+                        secondary: '#fbbf24', // Dorado/Amarillo para acentos
+                        dark: '#111827'
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.4s ease-out'
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(10px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
+                        }
+                    }
+                }
+            }
+        }
+
+    </script>
+    <!--Estilo para el contenedor del iframe de Google Forms -->
+    <style>
+        /* Deshabilitar selección de texto como medida extra de seguridad visual */
+        body {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        /* Estilo para el contenedor del iframe de Google Forms */
+        .google-form-container {
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            padding-top: 120%;
+            /* Ajuste para proporción en móviles */
+        }
+
+        @media (min-width: 768px) {
+            .google-form-container {
+                padding-top: 100%;
+                /* Ajuste para desktop */
+            }
+        }
+
+        .google-form-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .social-card:hover .social-icon {
+            transform: scale(1.1) rotate(5deg);
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 text-gray-800 flex flex-col min-h-screen font-sans">
+
+    <!-- Botón de WhatsApp Flotante -->
+    <!-- CORRECCIÓN: Agregado rel="noopener noreferrer" por seguridad -->
+    <a href="https://wa.me/543814963423?text=Hola!%20Me%20gustaría%20consultar%20por%20un%20trámite." target="_blank"
+        rel="noopener noreferrer"
+        class="fixed bottom-6 right-6 z-[100] bg-green-500 text-white w-16 h-16 rounded-full flex items-center justify-center shadow-2xl hover:bg-green-600 transition-all hover:scale-110 animate-bounce-slow">
+        <i class="fa-brands fa-whatsapp text-3xl"></i>
+    </a>
+
+    <!-- Navbar -->
+    <header class="bg-white shadow-md sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center gap-3 cursor-pointer" onclick="navigate('inicio')">
+                <!-- Fallback icon si la imagen no carga -->
+                <img src="imagenes/JD3.svg" alt="Logo" class="w-12 h-12">
+                <div>
+                    <h1 class="text-xl font-bold text-primary leading-tight">Gestiones Integrales</h1>
+                    <p class="text-xs text-gray-500 font-semibold tracking-widest uppercase">Tucumán</p>
+                </div>
+            </div>
+            <!-- Menú Desktop -->
+            <nav class="hidden md:flex gap-6">
+                <button onclick="navigate('inicio')"
+                    class="nav-link text-gray-600 hover:text-primary font-medium transition-colors border-b-2 border-transparent hover:border-primary pb-1 active-nav">Inicio</button>
+                <button onclick="navigate('nosotros')"
+                    class="nav-link text-gray-600 hover:text-primary font-medium transition-colors border-b-2 border-transparent hover:border-primary pb-1">Nosotros</button>
+                <button onclick="navigate('contacto')"
+                    class="nav-link text-gray-600 hover:text-primary font-medium transition-colors border-b-2 border-transparent hover:border-primary pb-1">Contacto</button>
+            </nav>
+            <!-- Menú Mobile Botón -->
+            <button class="md:hidden text-2xl text-primary" onclick="toggleMobileMenu()">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+        <!-- Menú Mobile Desplegable -->
+
+        <div id="mobileMenu" class="hidden bg-white border-t border-gray-100 md:hidden absolute w-full shadow-lg">
+            <button onclick="navigate('inicio'); toggleMobileMenu()"
+                class="block w-full text-left px-6 py-3 border-b text-gray-600 hover:bg-gray-50 hover:text-primary">Inicio</button>
+            <button onclick="navigate('nosotros'); toggleMobileMenu()"
+                class="block w-full text-left px-6 py-3 border-b text-gray-600 hover:bg-gray-50 hover:text-primary">Nosotros</button>
+            <button onclick="navigate('contacto'); toggleMobileMenu()"
+                class="block w-full text-left px-6 py-3 text-gray-600 hover:bg-gray-50 hover:text-primary">Contacto</button>
+        </div>
+    </header>
+
+    <!-- Contenido Principal -->
+    <main class="flex-grow">
+        <!-- SECCIÓN: INICIO -->
+        <section id="inicio" class="page-section animate-fade-in block">
+
+            <!-- Hero -->
+            <div class="bg-primary text-white py-20 relative overflow-hidden">
+                <div class="absolute inset-0 opacity-20 bg-[url('imagenes/laptopOficina.jpg')] bg-cover bg-center">
+                </div>
+                <div
+                    class="container mx-auto px-4 relative z-10 text-center md:text-left grid md:grid-cols-2 gap-8 items-center">
+                    <div>
+                        <h2 class="text-4xl md:text-5xl font-bold mb-4 leading-tight">Soluciones ágiles para tus
+                            trámites</h2>
+                        <p class="text-lg text-blue-100 mb-8">Especialistas en gestiones registrales y
+                            administrativas en toda la provincia de Tucumán. <br>
+                            Ahorrá tiempo y dolores de cabeza.</p>
+                        <button
+                            onclick="window.open('https://forms.gle/35eRVdvUvqd9Fq5N8', '_blank', 'noopener,noreferrer')"
+                            class="bg-secondary text-dark font-bold px-8 py-3 rounded-full shadow-lg hover:bg-yellow-400 transition-transform hover:scale-105">
+                            Formulario de consulta
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!--Requisitos para cotizar-->
+            <div class="container mx-auto px-4 py-16 max-w-5xl">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold text-primary"> Requisitos para cotizar </h2>
+                    <div class="w-24 h-1 bg-secondary mx-auto mt-4 rounded"></div>
+                </div>
+
+                <div class="bg-white rounded-3xl shadow-lg overflow-hidden flex flex-col md:flex-row">
+                    <div class="md:w-1/2 p-8 md:p-12 flex flex-col justify-center">
+                        <h3 class="text-2xl font-bold mb-4 text-dark">Trámites en general</h3>
+                        <p class="text-gray-600 mb-6 leading-relaxed">
+                            Para cotizar cualquier trámite, es fundamental que nos brindes información precisa y
+                            completa. Esto nos permite evaluar correctamente el proceso, identificar posibles
+                            obstáculos y ofrecerte un presupuesto justo y transparente.
+                        </p>
+                        <p class="text-gray-600 leading-relaxed mb-12">
+                            Asegurate de incluir detalles como el tipo de trámite, la documentación que tenés a
+                            mano, y cualquier información adicional que consideres relevante. Cuanta más
+                            información nos proporciones, mejor podremos asesorarte y garantizar un proceso
+                            eficiente.
+                        </p>
+                        <button
+                            onclick="window.open('https://mailto:gestoriaintegraltuc@gmail.com', '_blank', 'noopener,noreferrer')"
+                            class="bg-secondary text-dark font-bold px-8 py-3 rounded-full shadow-lg hover:bg-yellow-400 transition-transform hover:scale-105">
+                            Cotizar trámites <i class="fa-solid fa-mail-forward ml-2"></i>
+                        </button>
+                    </div>
+                    <div class="md:w-1/2 bg-gray-200 min-h-[300px] relative">
+                        <img src="imagenes/workofice.jpg" alt="" class="absolute inset-0 w-full h-full object-cover">
+                    </div>
+                </div>
+            </div>
+            <!-- Servicios -->
+            <div class="container mx-auto px-4 py-16">
+                <h3 class="text-3xl font-bold text-center text-primary mb-12">Nuestros Servicios</h3>
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div
+                        class="bg-white p-8 rounded-2xl shadow-sm hover:shadow-xl transition-shadow border border-gray-100 text-center">
+                        <div
+                            class="w-16 h-16 bg-blue-50 text-primary rounded-full flex items-center justify-center mx-auto mb-6 text-2xl">
+                            <i class="fa-solid fa-car"></i>
+                        </div>
+                        <h4 class="text-xl font-bold mb-3">Trámites Automotores</h4>
+                        <p class="text-gray-600 text-l">Transferencias, patentamientos, informes de dominio,
+                            bajas y altas de motores, cancelación de prendas etc...</p>
+                        <br>
+                        <!-- CORRECCIÓN: URL de WhatsApp corregida con número real -->
+                        <button onclick="window.open('https://wa.me/543814963423', '_blank', 'noopener,noreferrer')"
+                            class="bg-secondary text-dark font-bold px-8 py-3 rounded-full shadow-lg hover:bg-yellow-400 transition-transform hover:scale-105">
+                            Cotizar trámites <i class="fa-brands fa-whatsapp ml-2"></i>
+                        </button>
+                    </div>
+                    <div
+                        class="bg-white p-8 rounded-2xl shadow-sm hover:shadow-xl transition-shadow border border-gray-100 text-center">
+                        <div
+                            class="w-16 h-16 bg-blue-50 text-primary rounded-full flex items-center justify-center mx-auto mb-6 text-2xl">
+                            <i class="fa-solid fa-paperclip"></i>
+                        </div>
+                        <h4 class="text-xl font-bold mb-3">Gestiones Administrativas</h4>
+                        <p class="text-gray-600 text-l">Certificaciones, legalizaciones,
+                            trámites ante Rentas, Titulos universitarios o secundarios etc...</p>
+                        <br>
+                        <!-- CORRECCIÓN: URL de WhatsApp corregida con número real -->
+                        <button onclick="window.open('https://wa.me/543814963423', '_blank', 'noopener,noreferrer')"
+                            class="bg-secondary text-dark font-bold px-8 py-3 rounded-full shadow-lg hover:bg-yellow-400 transition-transform hover:scale-105">
+                            Cotizar trámites <i class="fa-brands fa-whatsapp ml-2"></i>
+                        </button>
+                    </div>
+                    <div
+                        class="bg-white p-8 rounded-2xl shadow-sm hover:shadow-xl transition-shadow border border-gray-100 text-center">
+                        <div
+                            class="w-16 h-16 bg-blue-50 text-primary rounded-full flex items-center justify-center mx-auto mb-6 text-2xl">
+                            <i class="fa-solid fa-file"></i>
+                        </div>
+                        <h4 class="text-xl font-bold mb-3">Asesoramiento de Actas</h4>
+                        <p class="text-gray-600 text-l">Actas del registro civil en formatos papel, Actas de
+                            Iglesia, ambas legalizadas para todo uso.
+                        </p>
+                        <br>
+                        <!-- CORRECCIÓN: URL de WhatsApp corregida con número real -->
+                        <button onclick="window.open('https://wa.me/543814963423', '_blank', 'noopener,noreferrer')"
+                            class="bg-secondary text-dark font-bold px-8 py-3 rounded-full shadow-lg hover:bg-yellow-400 transition-transform hover:scale-105">
+                            Cotizar trámites <i class="fa-brands fa-whatsapp ml-2"></i>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+            <!-- SECCIÓN: REDES SOCIALES (Nueva) -->
+            <div class="bg-gray-100 py-16">
+                <div class="container mx-auto px-4">
+                    <div class="text-center mb-10">
+                        <h3 class="text-3xl font-bold text-primary">Seguinos en nuestras Redes</h3>
+                        <p class="text-gray-600 mt-2">Mantenete informado sobre nuevos requisitos y noticias del sector
+                        </p>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+                        <!-- Instagram -->
+                        <a href="https://instagram.com/gestoriaintegraltuc" target="_blank" rel="noopener noreferrer"
+                            class="social-card bg-white p-6 rounded-2xl shadow-sm flex items-center gap-4 hover:shadow-md transition-all group">
+                            <div
+                                class="social-icon w-12 h-12 bg-gradient-to-tr from-yellow-400 via-red-500 to-purple-600 text-white rounded-xl flex items-center justify-center text-2xl transition-transform">
+                                <i class="fa-brands fa-instagram"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-dark">Instagram</h4>
+                                <p class="text-xs text-gray-500">@gestoriaintegraltuc</p>
+                            </div>
+                        </a>
+                        <!-- Facebook -->
+                        <a href="https://facebook.com/gestoriaintegraltuc" target="_blank" rel="noopener noreferrer"
+                            class="social-card bg-white p-6 rounded-2xl shadow-sm flex items-center gap-4 hover:shadow-md transition-all group">
+                            <div
+                                class="social-icon w-12 h-12 bg-blue-600 text-white rounded-xl flex items-center justify-center text-2xl transition-transform">
+                                <i class="fa-brands fa-facebook-f"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-dark">Facebook</h4>
+                                <p class="text-xs text-gray-500">Gestoría Integral Tucumán</p>
+                            </div>
+                        </a>
+                        <!-- TikTok / LinkedIn / etc -->
+                        <a href="#" target="_blank" rel="noopener noreferrer"
+                            class="social-card bg-white p-6 rounded-2xl shadow-sm flex items-center gap-4 hover:shadow-md transition-all group">
+                            <div
+                                class="social-icon w-12 h-12 bg-black text-white rounded-xl flex items-center justify-center text-2xl transition-transform">
+                                <i class="fa-brands fa-tiktok"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-dark">TikTok</h4>
+                                <p class="text-xs text-gray-500">Próximamente</p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- SECCIÓN: NOSOTROS -->
+        <section id="nosotros" class="page-section animate-fade-in hidden">
+            <div class="container mx-auto px-4 py-16 max-w-5xl">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold text-primary">Sobre Nosotros</h2>
+                    <div class="w-24 h-1 bg-secondary mx-auto mt-4 rounded"></div>
+                </div>
+
+                <div class="bg-white rounded-3xl shadow-lg overflow-hidden flex flex-col md:flex-row">
+                    <div class="md:w-1/2 p-8 md:p-12 flex flex-col justify-center">
+                        <h3 class="text-2xl font-bold mb-4 text-dark">Experiencia y Confianza</h3>
+                        <p class="text-gray-600 mb-6 leading-relaxed">
+                            En <strong>Gestiones Integrales Tucumán</strong>, llevamos años facilitando la vida
+                            de
+                            nuestros
+                            clientes. Entendemos que la burocracia puede ser estresante, por eso nos dedicamos a
+                            resolver tus trámites con transparencia, rapidez y eficacia.
+                        </p>
+                        <p class="text-gray-600 leading-relaxed mb-6">
+                            Nuestro equipo está capacitado y actualizado constantemente con las normativas
+                            vigentes para
+                            asegurarte que cada papel y cada firma estén en el lugar correcto, en el menor
+                            tiempo
+                            posible.
+                        </p>
+                        <ul class="space-y-3">
+                            <li class="flex items-center text-lg font-medium text-gray-700"><i
+                                    class="fa-solid fa-check text-green-500 mr-3"></i>
+                                <strong>Resultados Garantizados</strong>
+                            </li>
+                            <li class="flex items-center text-lg font-medium text-gray-700"><i
+                                    class="fa-solid fa-check text-green-500 mr-3"></i>
+                                <strong> 90 opiniones positivas en Google </strong>
+                            </li>
+                            <li class="flex items-center text-lg font-medium text-gray-700"><i
+                                    class="fa-solid fa-check text-green-500 mr-3"></i>
+                                <strong> Envíos a todo el mundo </strong>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="md:w-1/2 bg-gray-200 min-h-[300px] relative">
+                        <img src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                            alt="" class="absolute inset-0 w-full h-full object-cover">
+                    </div>
+                </div>
+            </div>
+            <!-- SECCIÓN: REDES SOCIALES (Nueva) -->
+            <div class="bg-gray-100 py-16">
+                <div class="container mx-auto px-4">
+                    <div class="text-center mb-10">
+                        <h3 class="text-3xl font-bold text-primary">Seguinos en nuestras Redes</h3>
+                        <p class="text-gray-600 mt-2">Mantenete informado sobre nuevos requisitos y noticias del sector
+                        </p>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+                        <!-- Instagram -->
+                        <a href="https://instagram.com/gestoriaintegraltuc" target="_blank" rel="noopener noreferrer"
+                            class="social-card bg-white p-6 rounded-2xl shadow-sm flex items-center gap-4 hover:shadow-md transition-all group">
+                            <div
+                                class="social-icon w-12 h-12 bg-gradient-to-tr from-yellow-400 via-red-500 to-purple-600 text-white rounded-xl flex items-center justify-center text-2xl transition-transform">
+                                <i class="fa-brands fa-instagram"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-dark">Instagram</h4>
+                                <p class="text-xs text-gray-500">@gestoriaintegraltuc</p>
+                            </div>
+                        </a>
+                        <!-- Facebook -->
+                        <a href="https://facebook.com/gestoriaintegraltuc" target="_blank" rel="noopener noreferrer"
+                            class="social-card bg-white p-6 rounded-2xl shadow-sm flex items-center gap-4 hover:shadow-md transition-all group">
+                            <div
+                                class="social-icon w-12 h-12 bg-blue-600 text-white rounded-xl flex items-center justify-center text-2xl transition-transform">
+                                <i class="fa-brands fa-facebook-f"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-dark">Facebook</h4>
+                                <p class="text-xs text-gray-500">Gestoría Integral Tucumán</p>
+                            </div>
+                        </a>
+                        <!-- TikTok / LinkedIn / etc -->
+                        <a href="#" target="_blank" rel="noopener noreferrer"
+                            class="social-card bg-white p-6 rounded-2xl shadow-sm flex items-center gap-4 hover:shadow-md transition-all group">
+                            <div
+                                class="social-icon w-12 h-12 bg-black text-white rounded-xl flex items-center justify-center text-2xl transition-transform">
+                                <i class="fa-brands fa-tiktok"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-dark">TikTok</h4>
+                                <p class="text-xs text-gray-500">Próximamente</p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <!-- Fin de la sección de redes sociales -->
+        </section>
+
+        <!-- SECCIÓN: CONTACTO -->
+        <section id="contacto" class="page-section animate-fade-in hidden">
+            <div class="container mx-auto px-4 py-16 max-w-6xl">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold text-primary">Contacto</h2>
+                    <p class="text-gray-500 mt-2">Si el formulario no se carga, ingresa a este link </p>
+                    <a href="https://forms.gle/35eRVdvUvqd9Fq5N8" target="_blank" rel="noreferrer noopener"
+                        class="text-secondary font-medium hover:underline"> HACER CLICK AQUÍ </a>
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-8">
+                    <!-- Info de contacto -->
+                    <div class="md:col-span-1 space-y-6">
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex items-start">
+                            <div class="bg-blue-50 p-3 rounded-lg text-primary mr-4"><i
+                                    class="fa-solid fa-location-dot"></i></div>
+                            <div>
+                                <h4 class="font-bold text-dark">Ubicación</h4>
+                                <p class="text-sm text-gray-600 mt-1">San Miguel de Tucumán</p>
+                                <p class="text-xs text-gray-500 mt-1">Departamento - capital</p>
+                            </div>
+                        </div>
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex items-start">
+                            <div class="bg-blue-50 p-3 rounded-lg text-primary mr-4"><i
+                                    class="fa-solid fa-envelope"></i></div>
+                            <div>
+                                <h4 class="font-bold text-dark">Email Directo</h4>
+                                <p class="text-sm text-gray-600 mt-1">gestoriaintegraltuc@gmail.com</p>
+                                <p class="text-xs text-gray-500 mt-1">Respuesta dentro de las 24 horas enviada la
+                                    consulta</p>
+                            </div>
+                        </div>
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex items-start">
+                            <div class="bg-blue-50 p-3 rounded-lg text-primary mr-4"><i
+                                    class="fa-brands fa-whatsapp"></i></div>
+                            <div>
+                                <h4 class="font-bold text-dark">WhatsApp</h4>
+                                <p class="text-sm text-gray-600 mt-1">+54 3814 963423</p>
+                                <p class="text-xs text-gray-500 mt-1">Solo mensajes</p>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Google Form Interactivo -->
+                    <div
+                        class="md:col-span-2 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden p-2">
+                        <div class="google-form-container">
+                            <!-- DEBES REEMPLAZAR EL ENLACE DE ABAJO CON TU PROPIO FORMULARIO -->
+                            <!-- Pasos: En Google Forms click en "Enviar" -> icono de enlace <> -> Copiar URL del "src" -->
+                            <!-- SEGURIDAD: sandbox limita permisos del iframe -->
+                            <iframe src="https://forms.gle/35eRVdvUvqd9Fq5N8" title="Formulario de contacto"
+                                sandbox="allow-scripts allow-forms allow-same-origin allow-popups"
+                                rel="noopener noreferrer" frameborder="0" marginheight="0" marginwidth="0">
+                                Cargando formulario...
+                            </iframe>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- SECCIÓN: REDES SOCIALES (Nueva) -->
+            <div class="bg-gray-100 py-16">
+                <div class="container mx-auto px-4">
+                    <div class="text-center mb-10">
+                        <h3 class="text-3xl font-bold text-primary">Seguinos en nuestras Redes</h3>
+                        <p class="text-gray-600 mt-2">Mantenete informado sobre nuevos requisitos y noticias del sector
+                        </p>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+                        <!-- Instagram -->
+                        <a href="https://instagram.com/gestoriaintegraltuc" target="_blank" rel="noopener noreferrer"
+                            class="social-card bg-white p-6 rounded-2xl shadow-sm flex items-center gap-4 hover:shadow-md transition-all group">
+                            <div
+                                class="social-icon w-12 h-12 bg-gradient-to-tr from-yellow-400 via-red-500 to-purple-600 text-white rounded-xl flex items-center justify-center text-2xl transition-transform">
+                                <i class="fa-brands fa-instagram"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-dark">Instagram</h4>
+                                <p class="text-xs text-gray-500">@gestoriaintegraltuc</p>
+                            </div>
+                        </a>
+                        <!-- Facebook -->
+                        <a href="https://facebook.com/gestoriaintegraltuc" target="_blank" rel="noopener noreferrer"
+                            class="social-card bg-white p-6 rounded-2xl shadow-sm flex items-center gap-4 hover:shadow-md transition-all group">
+                            <div
+                                class="social-icon w-12 h-12 bg-blue-600 text-white rounded-xl flex items-center justify-center text-2xl transition-transform">
+                                <i class="fa-brands fa-facebook-f"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-dark">Facebook</h4>
+                                <p class="text-xs text-gray-500">Gestoría Integral Tucumán</p>
+                            </div>
+                        </a>
+                        <!-- TikTok / LinkedIn / etc -->
+                        <a href="#" target="_blank" rel="noopener noreferrer"
+                            class="social-card bg-white p-6 rounded-2xl shadow-sm flex items-center gap-4 hover:shadow-md transition-all group">
+                            <div
+                                class="social-icon w-12 h-12 bg-black text-white rounded-xl flex items-center justify-center text-2xl transition-transform">
+                                <i class="fa-brands fa-tiktok"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-dark">TikTok</h4>
+                                <p class="text-xs text-gray-500">Próximamente</p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <!-- Fin de la sección de redes sociales -->
+
+            <!-- SECCIÓN DE RESEÑAS REALES -->
+            <div class="mt-20">
+                <div class="flex flex-col items-center mb-10">
+                    <div class="flex items-center gap-2 mb-2">
+                    </div>
+                    <h3 class="text-2xl font-bold text-primary text-center">
+                        Excelencia avalada por nuestros clientes
+                    </h3>
+                    <p class="text-gray-500 text-sm mt-1">Basado en opiniones reales de Google</p>
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-6">
+                    <!-- Reseña Real 1 -->
+                    <div
+                        class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 review-card flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center gap-3 mb-4">
+                                <div
+                                    class="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white font-bold">
+                                    V</div>
+                                <div>
+                                    <h5 class="font-semibold text-sm">Valentín González</h5>
+                                    <div class="flex text-secondary text-[10px]">
+                                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                            class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                            class="fa-solid fa-star"></i>
+                                    </div>
+                                </div>
+                                <i class="fa-brands fa-google text-gray-300 ml-auto"></i>
+                            </div>
+                            <p class="text-sm text-gray-600 leading-relaxed italic">"Excelente atención, rapidez
+                                y
+                                profesionalismo. Me ayudaron con todo el papelerío del auto sin complicaciones."
+                            </p>
+                        </div>
+                        <p class="text-[10px] text-gray-400 mt-4 uppercase tracking-widest">Reseña verificada
+                        </p>
+                    </div>
+
+                    <!-- Reseña Real 2 -->
+                    <div
+                        class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 review-card flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center gap-3 mb-4">
+                                <div
+                                    class="w-10 h-10 bg-secondary rounded-full flex items-center justify-center text-dark font-bold">
+                                    A</div>
+                                <div>
+                                    <h5 class="font-semibold text-sm">Analía Ruiz</h5>
+                                    <div class="flex text-secondary text-[10px]">
+                                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                            class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                            class="fa-solid fa-star"></i>
+                                    </div>
+                                </div>
+                                <i class="fa-brands fa-google text-gray-300 ml-auto"></i>
+                            </div>
+                            <p class="text-sm text-gray-600 leading-relaxed italic">"Muy buena predisposición
+                                para
+                                explicar cada paso de la gestión. Los precios son súper justos para el servicio
+                                que
+                                brindan."</p>
+                        </div>
+                        <p class="text-[10px] text-gray-400 mt-4 uppercase tracking-widest">Reseña verificada
+                        </p>
+                    </div>
+
+                    <!-- Reseña Real 3 -->
+                    <div
+                        class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 review-card flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center gap-3 mb-4">
+                                <div
+                                    class="w-10 h-10 bg-dark rounded-full flex items-center justify-center text-white font-bold">
+                                    C</div>
+                                <div>
+                                    <h5 class="font-semibold text-sm">Cristian M.</h5>
+                                    <div class="flex text-secondary text-[10px]">
+                                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                            class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                            class="fa-solid fa-star"></i>
+                                    </div>
+                                </div>
+                                <i class="fa-brands fa-google text-gray-300 ml-auto"></i>
+                            </div>
+                            <p class="text-sm text-gray-600 leading-relaxed italic">"Solucionaron un problema
+                                registral
+                                que venía arrastrando hace meses. Gestión impecable y comunicación constante."
+                            </p>
+                        </div>
+                        <p class="text-[10px] text-gray-400 mt-4 uppercase tracking-widest">Reseña verificada
+                        </p>
+                    </div>
+                </div>
+
+                <br>
+                <!-- Footer de la sección de reseñas -->
+                <div class="mt-10 flex flex-col items-center">
+                    <!-- CORRECCIÓN: Agregado rel="noopener noreferrer" por seguridad -->
+                    <a href="https://g.page/r/CTVOsSSo7HAXEBM/review" target="_blank" rel="noopener noreferrer"
+                        class="text-primary hover:underline font-medium text-sm flex items-center gap-2 mb-2">
+                        Ver todas las opiniones en Google Maps <i class="fa-solid fa-arrow-right-long"></i>
+                    </a>
+                </div>
+
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer Compartido -->
+    <footer class="bg-dark text-white pt-12 pb-6">
+        <div class="container mx-auto px-4">
+            <div class="grid md:grid-cols-3 gap-8 mb-8 border-b border-gray-800 pb-8">
+                <div>
+                    <h4 class="text-xl font-bold mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-file text-secondary"></i> Gestoría Integral
+                    </h4>
+                    <p class="text-gray-400 text-sm">Tu aliado de confianza para todos tus trámites registrales
+                        y
+                        administrativos en Tucumán.</p>
+                </div>
+                <div>
+                    <h4 class="text-lg font-bold mb-4">Enlaces Rápidos</h4>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li><button onclick="navigate('inicio')" class="hover:text-secondary transition">Inicio</button>
+                        </li>
+                        <li><button onclick="navigate('nosotros')" class="hover:text-secondary transition">Sobre
+                                Nosotros</button></li>
+                        <li><button onclick="navigate('contacto')"
+                                class="hover:text-secondary transition">Contacto</button></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-bold mb-4">Boletín Informativo</h4>
+                    <p class="text-gray-400 text-sm mb-3">Suscribite para recibir novedades y alertas de
+                        vencimientos.
+                    </p>
+                    <!-- CORRECCIÓN: Contenedor div reemplazado por <form> con action a formspree -->
+                    <form action="https://formspree.io/f/mpqkzkow" method="POST" class="flex">
+                        <!-- SEGURIDAD: Campo honeypot oculto para filtrar bots -->
+                        <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off">
+                        <input type="email" name="email" id="subscribeEmail" placeholder="Correo Electrónico" required
+                            autocomplete="email" spellcheck="false"
+                            class="px-3 py-2 bg-gray-800 text-white border border-gray-700 rounded-l-lg outline-none focus:border-secondary w-full text-sm">
+                        <button type="submit"
+                            class="bg-primary hover:bg-blue-700 px-4 py-2 rounded-r-lg font-medium text-sm transition">Suscribirme</button>
+                    </form>
+                </div>
+            </div>
+            <div class="text-center text-gray-500 text-sm">
+                <p>Copyright &copy; 2026 Jorge Federíco Díaz / Tucumán - Argentina</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts de Lógica y Seguridad -->
+    <script>
+        // --- 1. LÓGICA DE NAVEGACIÓN (Single Page Application) ---
+        function navigate(pageId) {
+            // Ocultar todas las secciones
+            document.querySelectorAll('.page-section').forEach(section => {
+                section.classList.add('hidden');
+                section.classList.remove('block');
+            });
+
+            // Mostrar la sección seleccionada
+            const target = document.getElementById(pageId);
+            if (target) {
+                target.classList.remove('hidden');
+                target.classList.add('block');
+            }
+
+            // Actualizar estilo visual del menú
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('text-primary', 'border-primary');
+                if (link.textContent.toLowerCase() === pageId || (pageId === 'inicio' && link.textContent === 'Inicio')) {
+                    link.classList.add('text-primary', 'border-primary');
+                }
+            });
+
+            // Scroll arriba suave
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Toggle Menú Móvil
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            menu.classList.toggle('hidden');
+        }
+
+        // --- 2. MEDIDAS DE EXPERIENCIA DE USUARIO (Anticopia básica) ---
+        // NOTA TÉCNICA: El bloqueo de clic derecho, atajos de teclado y user-select
+        // son medidas de fricción para el usuario promedio. NO constituyen seguridad
+        // real: un atacante puede bypassearlas fácilmente. La seguridad real del
+        // sitio está en la CSP, las cabeceras HTTP del servidor (Helmet) y la
+        // validación/sanitización de datos en el backend (Form.js).
+
+        // Deshabilitar Clic Derecho (Menú Contextual)
+        document.addEventListener('contextmenu', event => event.preventDefault());
+
+        // Deshabilitar atajos de teclado de herramientas de desarrollador
+        document.onkeydown = function (e) {
+            // F12
+            if (e.keyCode === 123) {
+                e.preventDefault();
+                return false;
+            }
+            // Ctrl + Shift + I (Inspeccionar)
+            if (e.ctrlKey && e.shiftKey && e.keyCode === 'I'.charCodeAt(0)) {
+                e.preventDefault();
+                return false;
+            }
+            // Ctrl + Shift + C (Inspeccionar Elemento)
+            if (e.ctrlKey && e.shiftKey && e.keyCode === 'C'.charCodeAt(0)) {
+                e.preventDefault();
+                return false;
+            }
+            // Ctrl + Shift + J (Consola)
+            if (e.ctrlKey && e.shiftKey && e.keyCode === 'J'.charCodeAt(0)) {
+                e.preventDefault();
+                return false;
+            }
+            // Ctrl + U (Ver código fuente)
+            if (e.ctrlKey && e.keyCode === 'U'.charCodeAt(0)) {
+                e.preventDefault();
+                return false;
+            }
+            // Ctrl + S (Guardar página)
+            if (e.ctrlKey && e.keyCode === 'S'.charCodeAt(0)) {
+                e.preventDefault();
+                return false;
+            }
+        };
+
+        // Anti-Arrastre de imágenes (prevenir que descarguen imágenes arrastrando)
+        document.querySelectorAll('img').forEach(img => {
+            img.addEventListener('dragstart', (e) => e.preventDefault());
+        });
+
+    </script>
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-analytics.js";
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+
+        // Your web app's Firebase configuration
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        const firebaseConfig = {
+            apiKey: "AIzaSyCF1y9rn7HvDvODim7ZKmrD6vzc3mKYN_o",
+            authDomain: "gestoriaintegral-tuc-8a245.firebaseapp.com",
+            projectId: "gestoriaintegral-tuc-8a245",
+            storageBucket: "gestoriaintegral-tuc-8a245.firebasestorage.app",
+            messagingSenderId: "1028030764110",
+            appId: "1:1028030764110:web:ed3c389107b255de71df1f",
+            measurementId: "G-5HN4XLPWZQ"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+    </script>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9GVDVHTN81">
+    </script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-9GVDVHTN81');
+    </script>
+</body>
+
+</html>
